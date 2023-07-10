@@ -10,8 +10,8 @@ import {
     StyleSheet,
   } from 'react-native';
   import * as React from 'react';
-  // import {NavigationContainer} from '@react-navigation/native';
-  // import {createNativeStackNavigator} from '@react-navigation/native-stack';
+  import {NavigationContainer} from '@react-navigation/native';
+  import {createNativeStackNavigator} from '@react-navigation/native-stack';
   import LinearGradient from "react-native-linear-gradient";
   import Modal from "react-native-modal";
 
@@ -28,7 +28,7 @@ import {
 
     return(
         <>
-        <View style={{paddingHorizontal:15}}>
+        <View style={{flex: 1, paddingHorizontal:15, backgroundColor: "black",}}>
         <TextInput          //username input box
             style={styles.inputs}
             placeholder='Username'
@@ -70,26 +70,25 @@ import {
             
         </View>
 
-        <Text style = {styles.text} onPress={() => {alert("Too bad")}}>Forgot Password?</Text>
+        <Text style = {styles.forgotPwText} onPress={() => {alert("Too bad")}}>Forgot Password?</Text>
 
         <TouchableOpacity
             //makes the button disabled by setting disabled to true if the given password conditions aren't met
             disabled = {password.length > 7 && /\d/g.test(password) ? false : true}
-            opacity = {disabled ? 0.5 : 1}
-            style={styles.loginButton}
+            style={{...styles.loginButton, opacity: disabled ? 0.5 : 1}}
         >
-            <Text style={styles.text}>
+            <Text style={styles.loginText}>
                 Login
             </Text>
         </TouchableOpacity>
 
         <Text
-            style= {styles.text}>
-            By clicking the button above, I agree to the
+            style= {styles.forgotPwText}>
+            By clicking the button above, I agree to the{' '}
 
             <Text
                 style= {{
-                    color: "blue",
+                    color: "#9999ff",
                     fontFamily: "serif",
                 }}
                 onPress={() =>{
@@ -121,20 +120,21 @@ import {
 
   const styles = StyleSheet.create({
     inputs: {
-        flex: 1,
+        width: "100%",
+        height: 55,
         backgroundColor: "#737373",
         borderWidth: 1,
-        borderColor: 'black',
         alignSelf: 'flex-start',
         borderRadius: 10,
         color: 'white',
+        marginTop: 10,
+        paddingHorizontal: 10,
     },
 
     pwAndIconContainer:{
         flexDirection: 'row',
         backgroundColor: "#737373",
         borderWidth: 1,
-        borderColor: 'black',
         width: "100%",
         height: 55,
         alignSelf: 'center',
@@ -142,6 +142,7 @@ import {
         borderRadius: 10,
         color: 'white',
         paddingHorizontal: 10,
+        marginTop: 10,
     },
 
     pwBox: {
@@ -161,15 +162,25 @@ import {
 
     loginButton: {
         width: "100%",
+        height: 55,
         backgroundColor: "#664bec",
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: 15,
     },
 
-    text: {
+    loginText:{
+        color: "white",
+        fontSize: 15,
+        fontWeight: 'bold',
+    },  
+
+    forgotPwText: {
         color: "white",
         fontSize: 10,
         fontFamily: "serif",
+        paddingHorizontal: 5,
     },
 
     modal: {

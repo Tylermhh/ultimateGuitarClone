@@ -9,8 +9,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import * as React from 'react';
-// import {NavigationContainer} from '@react-navigation/native';
-// import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LinearGradient from "react-native-linear-gradient";
 
 const AnimationContainerView = (props) => {
@@ -19,11 +17,11 @@ const AnimationContainerView = (props) => {
     //handles the animation behind the scenes. tweaks the values for animation to happen
     React.useEffect(() => {
         Animated.timing(containerTranslation, {
-            toValue: 200,
+            toValue: 100,
             duration: 1500,
             easing: Easing.bounce,
-            useNativeDriver: true //you just need this
-        })
+            useNativeDriver: true //you just need this idk why
+        }).start();
     })
 
     return (
@@ -46,6 +44,7 @@ const AnimationContainerView = (props) => {
 
 const WelcomePage = ({navigation}) => {
 
+  
     return(
         <>
         <View
@@ -56,7 +55,7 @@ const WelcomePage = ({navigation}) => {
                     
                 <LinearGradient            //container for gradient
                     style = {styles.gradientContainer}
-                    colors = {["black", "#664bec"]}>
+                    colors = {["#1e0d73", "#664bec"]}>
 
                     <TouchableOpacity
                         style={styles.buttonGuest}>
@@ -85,32 +84,44 @@ const styles = StyleSheet.create({
 
     bgContainer: {
         flex: 1,
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        padding: "10%"
+        backgroundColor: "black",
+        justifyContent: 'center',
+        padding: "5%"
     },
 
     animationContainer: {
-        flex: 1,
-        borderRadius: 10,
+
+        height: 500,
+        borderRadius: 20,
+        backgroundColor: "white",
     },
 
     gradientContainer: {
         flex: 1,
-        borderRadius: 10,
+        borderRadius: 20,
         paddingHorizontal: 10,
     },
 
     buttonGuest:{
         width: "100%",
+        height: 50,
         backgroundColor: "#b0b0b5",
         justifyContent:'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        paddingHorizontal: "5%",
+        marginTop: "100%",
     },
 
     buttonAcc:{
         width: "100%",
+        height: 50,
         backgroundColor: "black",
         justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        paddingHorizontal: "5%",
+        marginTop: 10,
     },
 
     buttonText:{
