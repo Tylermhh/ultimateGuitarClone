@@ -55,7 +55,7 @@ const WelcomePage = ({navigation}) => {
                     
                 <LinearGradient            //container for gradient
                     style = {styles.gradientContainer}
-                    colors = {["#1e0d73", "#664bec"]}>
+                    colors = {["#1e0d73", "#4e2fe9"]}>
 
                     <TouchableOpacity
                         style={styles.buttonGuest}
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
 
     bgContainer: {
         flex: 1,
-        backgroundColor: "black",
+        backgroundColor: "#1a1a1a",
         justifyContent: 'center',
         padding: "5%"
     },

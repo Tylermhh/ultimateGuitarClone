@@ -28,7 +28,7 @@ import {
 
     return(
         <>
-        <View style={{flex: 1, paddingHorizontal:15, backgroundColor: "black",}}>
+        <View style={styles.bgContainer}>
         <TextInput          //username input box
             style={styles.inputs}
             placeholder='Username'
@@ -120,6 +120,11 @@ import {
   }
 
   const styles = StyleSheet.create({
+    bgContainer: {
+        flex: 1, 
+        paddingHorizontal:15,
+        backgroundColor: "#1a1a1a"
+    },
     inputs: {
         width: "100%",
         height: 55,
