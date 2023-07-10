@@ -58,7 +58,10 @@ const WelcomePage = ({navigation}) => {
                     colors = {["#1e0d73", "#664bec"]}>
 
                     <TouchableOpacity
-                        style={styles.buttonGuest}>
+                        style={styles.buttonGuest}
+                        onPress={() => {
+                            navigation.navigate("homePage")
+                        }}>
                         <Text>Continue as Guest</Text>
                     </TouchableOpacity>
 

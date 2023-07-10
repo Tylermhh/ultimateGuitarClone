@@ -76,6 +76,7 @@ import {
             //makes the button disabled by setting disabled to true if the given password conditions aren't met
             disabled = {password.length > 7 && /\d/g.test(password) ? false : true}
             style={{...styles.loginButton, opacity: disabled ? 0.5 : 1}}
+            onPress={() => {navigation.navigate("")}}
         >
             <Text style={styles.loginText}>
                 Login
