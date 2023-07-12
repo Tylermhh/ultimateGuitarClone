@@ -12,7 +12,7 @@ const App = () => {
 
   return(
   <NavigationContainer>
-    <Stack.Navigator initialRouteName="welcomePage">
+    <Stack.Navigator initialRouteName="homePage">
       <Stack.Screen name="welcomePage" component={WelcomePage} options={optionsLst}/>
       <Stack.Screen name="loginPage" component={LoginPage} options={optionsLst}/>
       <Stack.Screen name="homePage" component={HomePage} options={optionsLst}/>
