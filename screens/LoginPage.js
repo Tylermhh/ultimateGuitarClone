@@ -75,8 +75,8 @@ import {
         <TouchableOpacity
             //makes the button disabled by setting disabled to true if the given password conditions aren't met
             disabled = {password.length > 7 && /\d/g.test(password) ? false : true}
-            style={{...styles.loginButton, opacity: disabled ? 0.5 : 1}}
-            onPress={() => {navigation.navigate("")}}
+            style={{...styles.loginButton, opacity: pwVisibility ? 1 : 0.5}}
+            onPress={() => {navigation.navigate("homePage")}}
         >
             <Text style={styles.loginText}>
                 Login
@@ -123,6 +123,7 @@ import {
     bgContainer: {
         flex: 1, 
         paddingHorizontal:15,
+        paddingTop: 30,
         backgroundColor: "#1a1a1a"
     },
     inputs: {
