@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './screens/HomeScreen';
 import DownloadsScreen from './screens/DownloadsScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import PokemonShopping from './practice/PokemonShopping';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -19,10 +20,11 @@ const App = () => {
 
   return(
   <NavigationContainer>
-    <Stack.Navigator initialRouteName="homePage">
+    <Stack.Navigator initialRouteName="pokiPage">
       <Stack.Screen name="welcomePage" component={WelcomePage} options={optionsLst}/>
       <Stack.Screen name="loginPage" component={LoginPage} options={optionsLst}/>
       <Stack.Screen name="homePage" component={HomePage} options={optionsLst}/>
+      <Stack.Screen name="pokiPage" component={PokemonShopping} options={optionsLst}/>
     </Stack.Navigator>
 
     {/* <Tab.Navigator

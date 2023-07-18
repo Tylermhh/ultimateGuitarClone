@@ -19,7 +19,7 @@ const DynamicHeader = ({animHeaderValue}) => {
   return (
     <Animated.View
         style={{...styles.header, height: animatedHeaderHeight}}>
-          <Text style={styles.headerText}>POKEMON CARDS</Text>
+          <Text style={styles.headerText}>POKEDEX</Text>
     </Animated.View>
   );
 };

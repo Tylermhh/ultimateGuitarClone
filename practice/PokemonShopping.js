@@ -10,7 +10,6 @@ import {
     ScrollView,
     FlatList,
   } from 'react-native';
-import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,48 +20,100 @@ import React, { useState, useRef } from 'react';
 import DynamicHeader from './components/DynamicHeader';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
+const pageSize = 12;
+
+
+
 const PokemonShopping = () => {
 
     const [oriData, setOriData] = useState();
     const [data, setData] = useState();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchCards = async (page) => {
+        try {
+          const response = await fetch(`https://api.pokemontcg.io/v2/cards?page=${page}&pageSize=${pageSize}`);
+          const json = await response.json();
+          return json.data;
+        } catch (error) {
+          console.error(error);
+          return [];
+        }
+      }
+
+    const fetchMore = async() => {
+        if (isLoading) {
+            return
+        }
+
+        setIsLoading(true);
+        const nextPage = currentPage + 1;
+        const newData = await fetchCards(nextPage);
+
+        setCurrentPage(nextPage);
+        setIsLoading(false);
+        setData(prevData => [...prevData, ...newData]);
+    };
 
     //gets the raw data from api
-    const getApiData = async() => {
-        try{
-            const response = await fetch("https://api.pokemontcg.io/v2/cards?");
-            const json = await response.json();
-            let addedSelectionData = json.data.map(item => {
-                return {...item, isSelected: false};
-            })
-            setOriData(addedSelectionData);
-            setData(addedSelectionData);
-        }
-        catch(error){
-            console.error;
-        }
-    }
+    // const getApiData = async() => {
+    //     try{
+    //         const response = await fetch(`https://api.pokemontcg.io/v2/cards?page=5&pageSize=12`);
+    //         const json = await response.json();
+
+    //         let addedSelectionData = json.data.map(item => {
+    //             return {...item, isSelected: false};
+    //         })
+
+
+    //         setOriData(addedSelectionData);
+    //         setData(addedSelectionData);
+    //         // console.log('added data',addedSelectionData);
+    //         // console.log("hi")
+    //     }
+    //     catch(error){
+    //         console.error;
+    //     }
+    // }
 
     //runs the getApiData function
     React.useEffect(() => {
-        getApiData();
+        fetchCards(currentPage).then(datas => setData(datas));
     }, [])
+
+    //to set the item's selected boolean to true if the add to cart button is clicked
+    const setSelected = ({item}) => {
+        let modifiedData = data.map(currItem => {
+            if (currItem.id == item.id){
+                currItem.isSelected = true;
+            }
+        })
+        setData(modifiedData);
+    }
+
+    //to reset all selection variables for all items when cart is cleared
+    const resetData = () => {
+        setData(oriData);
+    }
 
 
     //the design of each card display with all its info and select button
-    const Item = (imgSrc, name, rarity, price, stock, selectionStateText) => {
+    const Item = ({item}) => {
         return(
-            <View style={styles.itemView}>
-                <Image source = {imgSrc} style={styles.imageContainer}/>
-                <View style={styles.itemDetailsBox}>
-                    <Text style={styles.nameText}>{name}</Text>
-                    <Text style={styles.rarityText}>{rarity}</Text>
+           
+            <View style={{...styles.itemView}}>
+                {/* <Image source = {{url:item.images?.small}} style={styles.imageContainer}/> */}
+                 <View style={styles.itemDetailsBox}>
+                    <Text style={styles.nameText}>{item.name}</Text>
+                    <Text style={styles.rarityText}>{item.rarity}</Text>
                     <View style={styles.priceStockContainer}>
-                        <Text style={styles.priceStockText}>{"$ " + {price}}</Text>
-                        <Text style={styles.priceStockText}>{{stock} + " left"}</Text>
+                        <View style={styles.priceStockIndivid}><Text style={styles.priceStockText}>$  {item.cardmarket?.prices?.averageSellPrice}</Text></View>
+                        <View style={styles.priceStockIndivid}><Text style={styles.priceStockText}>{item.set.total} left</Text></View>
                     </View>
                 </View>
                 <TouchableOpacity style={styles.selectionBox}>
-                    {selectionStateText 
+                    {item.isSelected 
                     ?
                     <Text style={styles.selectionText}>{"Added"}</Text>
                     :
@@ -70,19 +121,22 @@ const PokemonShopping = () => {
                     }
                 </TouchableOpacity>
             </View>
-        )
+       )
     }
 
     //for the sticky header
     const scrollOffsetY = useRef(new Animated.Value(0)).current;
 
 
+    // console.log("Data===>",data)
     return(
     <>
     <SafeAreaView style={{ ...styles.bgContainer, flex: 1 }} forceInset={{ top: 'always' }}>       
-        <DynamicHeader animHeaderValue={scrollOffsetY} />
+        <DynamicHeader //this is a custom container to animate the header when scrolling
+            animHeaderValue={scrollOffsetY} /> 
+
             <ScrollView
-                style={{alignItems: 'center'}}
+            contentContainerStyle={{alignItems:'center', marginTop: 200}}
                 onScroll={Animated.event(
                     [{nativeEvent: {contentOffset: {y: scrollOffsetY}}}],
                 {useNativeDriver: false},
@@ -90,19 +144,26 @@ const PokemonShopping = () => {
                 <FlatList
                     data = {data}
                     showsVerticalScrollIndicator = {false}
-                    renderItem={({item}) => {
+                    // style={{backgroundColor: 'yellow', alignItems:'center'}}
+                    renderItem={({item,index}) => {
                         return(
-                            <Item
-                                imgSrc={item.cardmarket.url}
-                                name={item.name}
-                                rarity={item.rarity}
-                                price={item.cardmarket.prices.averageSellPrice}
-                                stock={item.set.total}
-                                selectionStateText={item.isSelected}>
+
+                            <Item item = {item}>
                             </Item>
+
+                            // <Item   //this is a custom container for how the items are displayed
+                            //     imgSrc={item.cardmarket.url}
+                            //     name={item.name}
+                            //     rarity={item.rarity}
+                            //     price={item.cardmarket.prices.averageSellPrice}
+                            //     stock={item.set.total}
+                            //     selectionStateText={item.isSelected}>
+                            // </Item>
                         )
                     }}
                     keyExtractor={item => item.id}
+                    onEndReached={fetchMore}
+                    onEndReachedThreshold={0.1}
                 /> 
             </ScrollView>
     </SafeAreaView> 
@@ -121,6 +182,7 @@ const styles = StyleSheet.create({
         height: 500,
         width: 300,
         alignItems: 'center',
+        
     },
 
     imageContainer: {
@@ -130,7 +192,7 @@ const styles = StyleSheet.create({
     },
 
     itemDetailsBox: {
-        height: 200,
+        height: 250,
         width: 300,
         marginTop: -50,
         backgroundColor: "white",
@@ -143,8 +205,8 @@ const styles = StyleSheet.create({
 
     selectionBox: {
         height: 50,
-        width: 150,
-        marginTop: -50,
+        width: 220,
+        marginTop: -35,
         backgroundColor: "black",
         justifyContent: 'center',
         alignItems: 'center',
@@ -154,7 +216,8 @@ const styles = StyleSheet.create({
     nameText: {
         fontSize: 30,
         fontWeight: 'bold',
-        marginTop: 75,
+        marginTop: 80,
+        color: "black",
     },
 
     rarityText: {
@@ -164,15 +227,24 @@ const styles = StyleSheet.create({
     },
 
     priceStockContainer: {
-        flex: 1,
+
+        height: 50,
         flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        paddingHorizontal: 20,
+    },
+
+    priceStockIndivid: {
+        flex: 1,
     },
 
     priceStockText: {
-        fontSize: 26,
-        flex: 1,
-        color: "dark-grey",
+        fontSize: 20,
+        alignSelf: 'center',
+        color: "black",
     },
 
     selectionText: {
@@ -184,6 +256,7 @@ const styles = StyleSheet.create({
     bgContainer: {
         flex: 1,
         backgroundColor: "grey",
+        alignContent: 'center',
     }
 })
 
