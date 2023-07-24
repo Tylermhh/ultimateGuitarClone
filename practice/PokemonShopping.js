@@ -35,7 +35,12 @@ const PokemonShopping = () => {
         try {
           const response = await fetch(`https://api.pokemontcg.io/v2/cards?page=${page}&pageSize=${pageSize}`);
           const json = await response.json();
-          return json.data;
+          let addedSelectionData = json.data.map(item => {
+                        return {...item, isSelected: false};
+            })
+            // console.log("fetched: ", addedSelectionData)
+          return addedSelectionData;
+          
         } catch (error) {
           console.error(error);
           return [];
@@ -83,11 +88,16 @@ const PokemonShopping = () => {
     }, [])
 
     //to set the item's selected boolean to true if the add to cart button is clicked
-    const setSelected = ({item}) => {
-        let modifiedData = data.map(currItem => {
-            if (currItem.id == item.id){
-                currItem.isSelected = true;
+    const setSelected = (currItem) => {
+        // console.log('currItemmmm', currItem)
+        let modifiedData = data.map(item => {
+            // console.log("curr", item)
+            if (item.id == currItem){
+                console.log("found item!")
+                item.isSelected = true;
+                item.set.total -= 1;
             }
+            return item;
         })
         setData(modifiedData);
     }
@@ -100,26 +110,40 @@ const PokemonShopping = () => {
 
     //the design of each card display with all its info and select button
     const Item = ({item}) => {
+
+        // console.log("Image src: ", item.images?.small)
         return(
-           
             <View style={{...styles.itemView}}>
-                {/* <Image source = {{url:item.images?.small}} style={styles.imageContainer}/> */}
+                <Image source = {{uri:item.images?.small}} style={styles.imageContainer}
+                        defaultSource={require('./pictures/pokemonLogo.png')}/>
                  <View style={styles.itemDetailsBox}>
                     <Text style={styles.nameText}>{item.name}</Text>
+
+                    {item.rarity?
                     <Text style={styles.rarityText}>{item.rarity}</Text>
+                    :
+                    <Text style={styles.rarityText}>Rarity Unknown</Text>
+                    }
+                    
                     <View style={styles.priceStockContainer}>
                         <View style={styles.priceStockIndivid}><Text style={styles.priceStockText}>$  {item.cardmarket?.prices?.averageSellPrice}</Text></View>
                         <View style={styles.priceStockIndivid}><Text style={styles.priceStockText}>{item.set.total} left</Text></View>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.selectionBox}>
-                    {item.isSelected 
-                    ?
+
+                {item.isSelected ?
+                    <TouchableOpacity style={{...styles.selectedBox, opacity: 0.75}} disabled={true}>
                     <Text style={styles.selectionText}>{"Added"}</Text>
+                    </TouchableOpacity>
                     :
+                    <TouchableOpacity style={styles.selectionBox} onPress={() => {setSelected(item.id)}}>
                     <Text style={styles.selectionText}>{"Add to Cart"}</Text>
-                    }
-                </TouchableOpacity>
+                    </TouchableOpacity>
+
+                }
+                
+
+
             </View>
        )
     }
@@ -161,7 +185,7 @@ const PokemonShopping = () => {
                             // </Item>
                         )
                     }}
-                    keyExtractor={item => item.id}
+                    keyExtractor={(item, index) => index}
                     onEndReached={fetchMore}
                     onEndReachedThreshold={0.1}
                 /> 
@@ -179,28 +203,41 @@ const PokemonShopping = () => {
 
 const styles = StyleSheet.create({
     itemView: {
-        height: 500,
+        height: 700,
         width: 300,
         alignItems: 'center',
-        
+        marginBottom: 100,
+        // backgroundColor: "red",
+        // borderColor: "black",
+        // borderWidth: 5,
     },
 
     imageContainer: {
         height: 400,
-        width: 200,
+        width: 260,
         borderRadius: 5,
+        zIndex: 1,
+        backgroundColor: "#bfbfbf",
+    },
+
+    imageUnavailable: {
+        height: 400,
+        width: 260,
+        borderRadius: 5,
+        zIndex: 1,
     },
 
     itemDetailsBox: {
-        height: 250,
+        height: 240,
         width: 300,
-        marginTop: -50,
+        marginTop: -70,
         backgroundColor: "white",
         shadowOffset: {
             width: 5,
             height: 10,},
         borderRadius: 20,
         alignItems: 'center',
+        zIndex: 0,
     },
 
     selectionBox: {
@@ -211,6 +248,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 25,
+    },
+
+    selectedBox: {
+        selectionBox: {
+            height: 50,
+            width: 220,
+            marginTop: -35,
+            backgroundColor: "grey",
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 25,
+        },
     },
     
     nameText: {
@@ -224,17 +273,19 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "blue",
         marginTop: 20,
+        // backgroundColor: "red",
     },
 
     priceStockContainer: {
 
-        height: 50,
+        height: 40,
         flexDirection: 'row',
-        marginTop: 5,
+        marginTop: 0,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 20,
         paddingHorizontal: 20,
+        // backgroundColor: "yellow",
     },
 
     priceStockIndivid: {
@@ -248,16 +299,17 @@ const styles = StyleSheet.create({
     },
 
     selectionText: {
-        fontSize: 26,
+        fontSize: 20,
         fontWeight: 'bold',
         color: "white",
     },
 
     bgContainer: {
         flex: 1,
-        backgroundColor: "grey",
-        alignContent: 'center',
-    }
+        backgroundColor: "#d9d9d9",
+    },
+
+    
 })
 
 export default PokemonShopping;
