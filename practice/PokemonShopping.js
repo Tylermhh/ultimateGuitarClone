@@ -189,7 +189,11 @@ const PokemonShopping = () => {
                     onEndReached={fetchMore}
                     onEndReachedThreshold={0.1}
                 /> 
+                
             </ScrollView>
+            <TouchableOpacity style={styles.cartButton}>
+            <Image source = {require("./pictures/cartTrans.png")} style={styles.cartImage}/>
+            </TouchableOpacity>
     </SafeAreaView> 
 
     
@@ -213,8 +217,8 @@ const styles = StyleSheet.create({
     },
 
     imageContainer: {
-        height: 400,
-        width: 260,
+        height: 380,
+        width: 250,
         borderRadius: 5,
         zIndex: 1,
         backgroundColor: "#bfbfbf",
@@ -309,6 +313,27 @@ const styles = StyleSheet.create({
         backgroundColor: "#d9d9d9",
     },
 
+    cartButton:{
+        position: 'flex-end',
+        alignSelf: 'flex-end',
+        marginBottom: 20,
+        marginRight: 20,
+        marginTop: 10,
+        width: 55,
+        height: 55,
+        borderRadius: 50,
+        borderColor: "white",
+        borderWidth: 2,
+        backgroundColor: "#3366ff",
+        zIndex: 2,
+        justifyContent: 'center',
+        alignItems:'center',
+    },
+
+    cartImage:{
+        height: 30,
+        width: 30,
+    }
     
 })
 
