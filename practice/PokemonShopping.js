@@ -131,7 +131,7 @@ const PokemonShopping = () => {
                     </View>
                 </View>
 
-                {item.isSelected ?
+                {item.isSelected && item.set.total > 0 ?
                     <TouchableOpacity style={{...styles.selectedBox, opacity: 0.75}} disabled={true}>
                     <Text style={styles.selectionText}>{"Added"}</Text>
                     </TouchableOpacity>

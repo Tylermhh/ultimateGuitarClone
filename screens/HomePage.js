@@ -109,7 +109,6 @@ const HomePage = ({navigation}) => {
           
         </SafeAreaView>
 
-        <View style={styles.bottomBar}></View>
       </View>
     </>
   );

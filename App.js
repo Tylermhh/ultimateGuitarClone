@@ -11,6 +11,8 @@ import HomeScreen from './screens/HomeScreen';
 import DownloadsScreen from './screens/DownloadsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import PokemonShopping from './practice/PokemonShopping';
+import SearchScreen from './screens/SearchScreen';
+import MainPage from './screens/MainPage';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,25 +22,33 @@ const App = () => {
 
   return(
   <NavigationContainer>
-    <Stack.Navigator initialRouteName="pokiPage">
+    <Stack.Navigator initialRouteName="loginPage">
       <Stack.Screen name="welcomePage" component={WelcomePage} options={optionsLst}/>
       <Stack.Screen name="loginPage" component={LoginPage} options={optionsLst}/>
+      <Stack.Screen name="mainPage" component={MainPage} options={optionsLst}/>
       <Stack.Screen name="homePage" component={HomePage} options={optionsLst}/>
       <Stack.Screen name="pokiPage" component={PokemonShopping} options={optionsLst}/>
     </Stack.Navigator>
 
+    {/* <Tab.Navigator>
+        <Tab.Screen name="homeTab" component={HomePage} options={optionsLst}/>
+        <Tab.Screen name="settingsTab" component={SettingsScreen} options={optionsLst}/>
+        <Tab.Screen name="downloadsTab" component={DownloadsScreen} options={optionsLst}/>
+        <Tab.Screen name="searchTab" component={SearchScreen} options={optionsLst}/>
+    </Tab.Navigator> */}
+
     {/* <Tab.Navigator
-            initialRouteName={homeName}
+            initialRouteName={homeTab}
             screenOptions={({route}) => ({
                 tabBarIcon: ({focused, color, size}) => {
                     let iconName;
                     let routeName = route.name;
 
-                    if (routeName === homeName){
+                    if (routeName === homeTab){
                         iconName = focused ? 'home' : 'home-outline'
-                    } else if (routeName === downloadsName){
+                    } else if (routeName === downloadsTab){
                         iconName = focused ? 'list' : 'list-outline'
-                    } else if (routeName === settingsName){
+                    } else if (routeName === settingsTab){
                         iconName = focused ? 'settings' : 'settings-outline'
                     }
 
@@ -56,9 +66,9 @@ const App = () => {
             }}
             >
 
-                <Tab.Screen name={homeName} component={HomeScreen}></Tab.Screen>
-                <Tab.Screen name={downloadsName} component={DownloadsScreen}></Tab.Screen>
-                <Tab.Screen name={settingsName} component={SettingsScreen}></Tab.Screen>
+                <Tab.Screen name={homeTab} component={HomeScreen}></Tab.Screen>
+                <Tab.Screen name={downloadsTab} component={DownloadsScreen}></Tab.Screen>
+                <Tab.Screen name={settingsTab} component={SettingsScreen}></Tab.Screen>
 
             </Tab.Navigator> */}
   </NavigationContainer>

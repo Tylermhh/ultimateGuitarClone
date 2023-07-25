@@ -70,13 +70,13 @@ import {
             
         </View>
 
-        <Text style = {styles.forgotPwText} onPress={() => {alert("Too bad")}}>Forgot Password?</Text>
+        <Text style = {{...styles.forgotPwText, textDecorationLine: 'underline'}} onPress={() => {alert("Too bad.")}}>Forgot Password?</Text>
 
         <TouchableOpacity
             //makes the button disabled by setting disabled to true if the given password conditions aren't met
-            disabled = {password.length > 7 && /\d/g.test(password) ? false : true}
-            style={{...styles.loginButton, opacity: pwVisibility ? 1 : 0.5}}
-            onPress={() => {navigation.navigate("homePage")}}
+            // disabled = {password.length > 7 && /\d/g.test(password) ? false : true}
+            style={{...styles.loginButton, opacity: password.length > 7 && /\d/g.test(password) ? 1 : 0.5}}
+            onPress={() => {navigation.navigate("mainPage")}}
         >
             <Text style={styles.loginText}>
                 Login
@@ -85,7 +85,7 @@ import {
 
         <Text
             style= {styles.forgotPwText}>
-            By clicking the button above, I agree to the{' '}
+            {'\n'}By clicking the button above, I agree to the{' '}
 
             <Text
                 style= {{
@@ -93,7 +93,7 @@ import {
                     fontFamily: "serif",
                 }}
                 onPress={() =>{
-                    toggleModal  //to show the terms and conditions modal
+                    toggleModal()  //to show the terms and conditions modal
                 }}>
                 Terms and Conditions
             </Text>
@@ -104,9 +104,9 @@ import {
             isVisible = {modalVisibility}>
             <View 
                 style={styles.modal}
-                onBackdropPress = {() => {toggleModal}}>
-                <Text>Ur not actually gonna read it even if it were here. Just go back and click the login button</Text>
-                <Button title="Okay bring me back" onPress={toggleModal} />
+                onBackdropPress = {() => {toggleModal()}}>
+                <Text>Ur not actually gonna read it even if it were here, are you? Just go back and click the login button</Text>
+                <View style= {styles.modalButton}><Button title="Fine" onPress={toggleModal} /></View>
             </View>
         </Modal>
         
@@ -192,8 +192,17 @@ import {
 
     modal: {
         flex: 1,
+        justifyContent: 'space-between',
         backgroundColor: "grey",
-    }
+        padding: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+
+    modalButton:{
+        width: 100,
+        marginBottom: 10,
+    },
   })
 
   export default LoginPage;
