@@ -19,7 +19,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Camera, Car, Download, Home, Search, Settings} from 'lucide-react-native'
 
 const CLIENT_ID = "0a3f6d6c86994102a14e9626074c8a8f"
+const CLIENT_SECRET = "f5e0356cb80e47fdb5a2a036e26f7113"
 const REDIR_URI = "http://localhost:8080/"
+const TOKEN_ENDPOINT_URL = "https://accounts.spotify.com/api/token"
+const CONTENT_TYPE = "application/x-www-form-urlencoded"
+const RESPONSE_TYPE = "token"
+
 
 //the container for how each search result will be displayed
 const Item = ()=> {
@@ -62,7 +67,9 @@ const SearchScreen = ({navigation}) =>{
           <FlatList
           data={data}
           showsVerticalScrollIndicator={false}
-          renderItem={({item})=> <Item/>}>
+          renderItem={({item})=> <Item/>}
+          //dont forget the keyExtractor part
+          >
           
 
           </FlatList>
