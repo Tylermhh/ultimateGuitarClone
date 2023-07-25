@@ -42,34 +42,36 @@ const TabBarContainer = () => {
 
                 //to spotlight which tab we have selected and change icon effects accordingly
                 tabBarIcon:({focused})=>{
-                    let routeName = route.name;
-                        if (routeName === homeName){
+                    let routeName = route.name
+
+                        switch(routeName){
+                            case homeName:
                                 if(focused){
                                     return <Home color='#c5bbf7' strokeWidth={1}/>
                                 }else{
                                     return <Home color='grey' strokeWidth={1}/>
                                 }
-                        }
-                        else if (routeName === searchName){
-                            if (focused){
-                                return <Search color='#c5bbf7' strokeWidth={1}/>
-                            }else{
-                                return <Search color='grey' strokeWidth={1}/>
-                            }
-                        }
-                        else if (routeName === downloadsName){
-                            if (focused){
-                                return <Download color='#c5bbf7' strokeWidth={1}/>
-                            }else{
-                                return <Download color='grey' strokeWidth={1}/>
-                            }
-                        }
-                        else if (routeName === settingsName){
-                            if (focused){
-                                return <Settings color='#c5bbf7' strokeWidth={1}/>
-                            }else{
-                                return <Settings color='grey' strokeWidth={1}/>
-                            }
+                                break;
+                            case searchName:
+                                if (focused){
+                                    return <Search color='#c5bbf7' strokeWidth={1}/>
+                                }else{
+                                    return <Search color='grey' strokeWidth={1}/>
+                                }
+                                break;
+                            case downloadsName:
+                                if (focused){
+                                    return <Download color='#c5bbf7' strokeWidth={1}/>
+                                }else{
+                                    return <Download color='grey' strokeWidth={1}/>
+                                }
+                                break;
+                            case settingsName:
+                                if (focused){
+                                    return <Settings color='#c5bbf7' strokeWidth={1}/>
+                                }else{
+                                    return <Settings color='grey' strokeWidth={1}/>
+                                }
                         }
                 },
                 tabBarStyle: {

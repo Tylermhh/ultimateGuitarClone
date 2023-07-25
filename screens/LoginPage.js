@@ -14,6 +14,7 @@ import {
   import {createNativeStackNavigator} from '@react-navigation/native-stack';
   import LinearGradient from "react-native-linear-gradient";
   import Modal from "react-native-modal";
+import { EyeIcon, EyeOff } from 'lucide-react-native';
 
   const LoginPage = ({navigation}) => {
 
@@ -55,15 +56,20 @@ import {
                 {pwVisibility?
 
                     //if pwVisibility is true
-                    <Image
-                        source={require("../images/eye-closed.png")}  //sets the image to be an eyeclosed icon to indicate what will happen when pressed
-                        style={styles.eyeIcon}/>
+                    // <Image
+                    //     source={require("../images/eye-closed.png")}  //sets the image to be an eyeclosed icon to indicate what will happen when pressed
+                    //     style={styles.eyeIcon}/>
+
+                    <EyeOff style={styles.eyeIcon} color='black'/>
+                        
                     :
                     
                     //else if pwVisibility is false
-                    <Image
-                        source={require("../images/eye-open.png")}   //sets image to eye-open
-                        style={styles.eyeIcon}/>
+                    // <Image
+                    //     source={require("../images/eye-open.png")}   //sets image to eye-open
+                    //     style={styles.eyeIcon}/>
+
+                    <EyeIcon style={styles.eyeIcon} color='black'/>
             
                 }
             </TouchableOpacity>
@@ -74,8 +80,8 @@ import {
 
         <TouchableOpacity
             //makes the button disabled by setting disabled to true if the given password conditions aren't met
-            // disabled = {password.length > 7 && /\d/g.test(password) ? false : true}
-            style={{...styles.loginButton, opacity: password.length > 7 && /\d/g.test(password) ? 1 : 0.5}}
+            // disabled = {username.length > 0 && password.length > 7 && /\d/g.test(password) ? false : true}
+            style={{...styles.loginButton, opacity: username.length > 0 && password.length > 7 && /\d/g.test(password) ? 1 : 0.5}}
             onPress={() => {navigation.navigate("mainPage")}}
         >
             <Text style={styles.loginText}>
@@ -105,12 +111,10 @@ import {
             <View 
                 style={styles.modal}
                 onBackdropPress = {() => {toggleModal()}}>
-                <Text>Ur not actually gonna read it even if it were here, are you? Just go back and click the login button</Text>
+                <Text>Let's be real. You're not actually gonna read it even if it were here, are you? Just go back and click the login button</Text>
                 <View style= {styles.modalButton}><Button title="Fine" onPress={toggleModal} /></View>
             </View>
         </Modal>
-        
-
         </View>
 
         </>

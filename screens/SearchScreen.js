@@ -18,26 +18,58 @@ import Modal from 'react-native-modal';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Camera, Car, Download, Home, Search, Settings} from 'lucide-react-native'
 
+const CLIENT_ID = "0a3f6d6c86994102a14e9626074c8a8f"
+const REDIR_URI = "http://localhost:8080/"
+
+//the container for how each search result will be displayed
+const Item = ()=> {
+  return(
+    <>
+    <TouchableOpacity
+    style={styles.itemContainer}>
+      <Image style={styles.albumCoverImg}/>
+      <View style={styles.itemDetailsBox}>
+        <Text>Song title</Text>
+        <Text>Artist</Text>
+      </View>
+    </TouchableOpacity>
+    </>
+  )
+}
+
 
 
 const SearchScreen = ({navigation}) =>{
 
-  const [id, setId] = React.useState('');
+  const [search, setSearch] = React.useState('');
+  const [data, setData] = React.useState([]);
     return (
-        <View style = {styles.bgContainer}>
+      <View style = {styles.bgContainer}>
           <View style={styles.searchContainer}>
             <TouchableOpacity style={styles.searchIcon}>
               <Search style={{flex: 1}} color='#d9d9d9' size={20} strokeWidth={2}/>
             </TouchableOpacity>
             <TextInput
               style={styles.searchbar}
-              // keyboardType='number-pad'
               placeholder="Search"
               placeholderTextColor={'#d9d9d9'}
-              onChangeText={input => setId(input)}
-              value={id}/>
+              onChangeText={input => setSearch(input)}
+              value={search}/>
           </View>
-        </View>
+
+        <SafeAreaView
+        style={styles.safeAreaContainer}>
+          <FlatList
+          data={data}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item})=> <Item/>}>
+          
+
+          </FlatList>
+        </SafeAreaView>
+
+      </View>
+
     )
 }
 
@@ -68,9 +100,9 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       width: "100%",
+      height: "6%",
       backgroundColor: '#595959',
       borderRadius: 10,
-      height: 50,
       paddingHorizontal: 5,
     },
 
@@ -79,8 +111,6 @@ const styles = StyleSheet.create({
       borderColor: 'white',
       backgroundColor: '#595959',
       borderRadius: 10,
-      width: '90%',
-      height: 50,
       paddingHorizontal: 0,
       // backgroundColor: 'red',
     },
@@ -92,6 +122,35 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       // backgroundColor: 'yellow',
     },
+
+    safeAreaContainer:{
+      flex: 1,
+      backgroundColor: 'red',
+      marginTop: 10,
+    },
+
+    itemContainer:{
+      flexDirection: 'row',
+      width: "100%",
+      height: "15%"
+    },
+
+    albumCoverImg: {
+      height: "100%",
+      aspectRatio: 1,
+      marginHorizontal: 10,
+      marginVertical: 10,
+    },
+
+    itemDetailsBox:{
+      flex: 1,
+
+    },
+
+    itemDetailsText:{
+      color: 'white',
+
+    }
   
   })
 
