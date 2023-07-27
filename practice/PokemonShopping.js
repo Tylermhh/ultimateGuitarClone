@@ -32,7 +32,9 @@ const PokemonShopping = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [modalVisibility, setModalVisibility] = useState(false);
-    const [cartData, setCartData] = useState()
+    const [cartData, setCartData] = useState([])
+
+    console.log('aaaaa', cartData)
 
     const toggleModal = () =>{
         if (isLoading){
@@ -101,20 +103,25 @@ const PokemonShopping = () => {
 
     //to set the item's selected boolean to true if the add to cart button is clicked
     const setSelected = (currItem) => {
-        // console.log('currItemmmm', currItem)
+
         let modifiedData = data.map(item => {
-            // console.log("curr", item)
-            if (item.id == currItem){
-                console.log("found item!");
+            
+            // console.log('bbbb', item);
+            if (item.id == currItem.id){
+                
                 //if we are unselecting
                 if (item.isSelected){
+
+                    setCartData(cartData.filter(item=>item.id !==currItem.id ))
                     //increase set total again
                     item.set.total += 1;
                 }
                 //else if we are selecting, decrement total
                 else{
+                    {cartData? setCartData(prevData => [...prevData, currItem]) : setCartData(currItem)}
                     item.set.total -= 1;
                 }
+
                 item.isSelected = !item.isSelected;
             }
             return item;
@@ -153,11 +160,11 @@ const PokemonShopping = () => {
                 </View>
 
                 {item.isSelected && item.set.total > 0 ?
-                    <TouchableOpacity style={{...styles.selectedBox}} onPress={() => {setSelected(item.id)}}>
+                    <TouchableOpacity style={{...styles.selectedBox}} onPress={() => {setSelected(item)}}>
                     <Text style={styles.selectionText}>{"Added"}</Text>
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity style={styles.selectionBox} onPress={() => {setSelected(item.id)}}>
+                    <TouchableOpacity style={styles.selectionBox} onPress={() => {setSelected(item)}}>
                     <Text style={styles.selectionText}>{"Add to Cart"}</Text>
                     </TouchableOpacity>
 
@@ -179,7 +186,7 @@ const PokemonShopping = () => {
                 defaultSource={require('./pictures/pokemonLogo.png')}/>
 
                 <View style={styles.cardDetails}>
-                    <Text style={{fontSize: 17, fontWeight: 'bold', color: "black",}}> Name </Text>
+                    <Text style={{fontSize: 17, fontWeight: 'bold', color: "black",}}>Name </Text>
                     <Text style={{fontSize: 10, color: 'black'}}>$ per card</Text>
                     <Text style={{marginTop: 20, fontSize: 10, color: '#cccccc'}}>____ cards left</Text>
                 </View>
@@ -246,8 +253,20 @@ const PokemonShopping = () => {
                     </TouchableOpacity>
 
                     <Text style={styles.cartTitle}>Your Cart</Text>
-                    
-                    <CartItem></CartItem>
+                    <SafeAreaView style={styles.cartListContainer}>
+                        <FlatList
+                            data={cartData}
+                            showsVerticalScrollIndicator = {true}
+                            contentContainerStyle={{alignItems: 'center', marginTop: 50}}
+                            renderItem={({item,index}) => {
+                                return(
+                                    <CartItem item = {item}>
+                                    </CartItem>
+                                )
+                            }}
+                            keyExtractor={(item, index) => index}
+                            />
+                    </SafeAreaView>
                 </View>
             </Modal>
     </SafeAreaView> 
@@ -412,12 +431,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-    cartListContainer:{
-        height: "80%",
-        width: "100%",
-        alignItems:'center',
-    },
-
     cartTitle:{
         color: 'black',
         fontSize: 18,
@@ -432,8 +445,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         width: "100%",
-        height: "30%",
+        height: 100,
         backgroundColor: 'red',
+        marginBottom: 10,
+        borderBottomColor: "grey",
+        borderBottomWidth: 1,
     },
 
     cartImageContainer:{
@@ -464,6 +480,11 @@ const styles = StyleSheet.create({
         width: "30%",
     },
 
+    cartListContainer:{
+        height: "70%",
+        backgroundColor: 'orange',
+        alignItems: 'center',
+    }
 
     
 })
