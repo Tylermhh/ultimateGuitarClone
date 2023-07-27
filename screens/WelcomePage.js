@@ -55,7 +55,8 @@ const WelcomePage = ({navigation}) => {
                     
                 <LinearGradient            //container for gradient
                     style = {styles.gradientContainer}
-                    colors = {["#1e0d73", "#4e2fe9"]}>
+                    //try "#040306", "#131624" for spotify-looking background
+                    colors = {["#1e0d73", "#4e2fe9"]}> 
 
                     <TouchableOpacity
                         style={styles.buttonGuest}

@@ -57,19 +57,19 @@ import { EyeIcon, EyeOff } from 'lucide-react-native';
 
                     //if pwVisibility is true
                     // <Image
-                    //     source={require("../images/eye-closed.png")}  //sets the image to be an eyeclosed icon to indicate what will happen when pressed
+                    //     source={require("../images/eye-closed.png")}  
                     //     style={styles.eyeIcon}/>
 
-                    <EyeOff style={styles.eyeIcon} color='black'/>
+                    <EyeOff style={styles.eyeIcon} color='black'/>  //sets the image to be an eyeclosed icon to indicate what will happen when pressed
                         
                     :
                     
                     //else if pwVisibility is false
                     // <Image
-                    //     source={require("../images/eye-open.png")}   //sets image to eye-open
+                    //     source={require("../images/eye-open.png")}   
                     //     style={styles.eyeIcon}/>
 
-                    <EyeIcon style={styles.eyeIcon} color='black'/>
+                    <EyeIcon style={styles.eyeIcon} color='black'/> //sets image to eye-open
             
                 }
             </TouchableOpacity>

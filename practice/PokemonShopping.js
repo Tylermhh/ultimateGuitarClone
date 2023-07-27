@@ -19,6 +19,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import React, { useState, useRef } from 'react';
 import DynamicHeader from './components/DynamicHeader';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { ShoppingCart, X } from 'lucide-react-native';
 
 const pageSize = 12;
 
@@ -30,6 +31,17 @@ const PokemonShopping = () => {
     const [data, setData] = useState();
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [modalVisibility, setModalVisibility] = useState(false);
+    const [cartData, setCartData] = useState()
+
+    const toggleModal = () =>{
+        if (isLoading){
+            return
+        }
+        setIsLoading(true);
+        setModalVisibility(!modalVisibility);
+        setIsLoading(false);
+    };
 
     const fetchCards = async (page) => {
         try {
@@ -93,14 +105,23 @@ const PokemonShopping = () => {
         let modifiedData = data.map(item => {
             // console.log("curr", item)
             if (item.id == currItem){
-                console.log("found item!")
-                item.isSelected = true;
-                item.set.total -= 1;
+                console.log("found item!");
+                //if we are unselecting
+                if (item.isSelected){
+                    //increase set total again
+                    item.set.total += 1;
+                }
+                //else if we are selecting, decrement total
+                else{
+                    item.set.total -= 1;
+                }
+                item.isSelected = !item.isSelected;
             }
             return item;
         })
         setData(modifiedData);
     }
+
 
     //to reset all selection variables for all items when cart is cleared
     const resetData = () => {
@@ -126,13 +147,13 @@ const PokemonShopping = () => {
                     }
                     
                     <View style={styles.priceStockContainer}>
-                        <View style={styles.priceStockIndivid}><Text style={styles.priceStockText}>$  {item.cardmarket?.prices?.averageSellPrice}</Text></View>
+                        <View style={styles.priceStockIndivid}><Text style={styles.priceStockText}>${item.cardmarket?.prices?.averageSellPrice}</Text></View>
                         <View style={styles.priceStockIndivid}><Text style={styles.priceStockText}>{item.set.total} left</Text></View>
                     </View>
                 </View>
 
                 {item.isSelected && item.set.total > 0 ?
-                    <TouchableOpacity style={{...styles.selectedBox, opacity: 0.75}} disabled={true}>
+                    <TouchableOpacity style={{...styles.selectedBox}} onPress={() => {setSelected(item.id)}}>
                     <Text style={styles.selectionText}>{"Added"}</Text>
                     </TouchableOpacity>
                     :
@@ -148,6 +169,31 @@ const PokemonShopping = () => {
        )
     }
 
+    const CartItem = ({item}) => {
+        return(
+            <View style={styles.cartItemBox}>
+                <Image 
+                source={require("./pictures/pokemonLogo.png")}
+                // source = {{uri:item.images?.small}} 
+                style={styles.cartImageContainer}
+                defaultSource={require('./pictures/pokemonLogo.png')}/>
+
+                <View style={styles.cardDetails}>
+                    <Text style={{fontSize: 17, fontWeight: 'bold', color: "black",}}> Name </Text>
+                    <Text style={{fontSize: 10, color: 'black'}}>$ per card</Text>
+                    <Text style={{marginTop: 20, fontSize: 10, color: '#cccccc'}}>____ cards left</Text>
+                </View>
+
+                <View style={styles.quantPriceBox}></View>
+                
+                <TouchableOpacity style={styles.deleteItemIcon} onPress={() => {}}>
+                    <X  color='grey' size={15}></X>
+                </TouchableOpacity>
+
+            </View>
+        )
+    }
+
     //for the sticky header
     const scrollOffsetY = useRef(new Animated.Value(0)).current;
 
@@ -159,30 +205,26 @@ const PokemonShopping = () => {
         <DynamicHeader //this is a custom container to animate the header when scrolling
             animHeaderValue={scrollOffsetY} /> 
 
-            <ScrollView
+            {/* <ScrollView
             contentContainerStyle={{alignItems:'center', marginTop: 200}}
                 onScroll={Animated.event(
                     [{nativeEvent: {contentOffset: {y: scrollOffsetY}}}],
                 {useNativeDriver: false},
-            )}>
+            )}> */}
                 <FlatList
                     data = {data}
                     showsVerticalScrollIndicator = {false}
+                    contentContainerStyle={{alignItems: 'center', marginTop: 50}}
+                    onScroll={Animated.event(
+                        [{nativeEvent: {contentOffset: {y: scrollOffsetY}}}],
+                    {useNativeDriver: false},
+                    )}
                     // style={{backgroundColor: 'yellow', alignItems:'center'}}
+                    
                     renderItem={({item,index}) => {
                         return(
-
                             <Item item = {item}>
                             </Item>
-
-                            // <Item   //this is a custom container for how the items are displayed
-                            //     imgSrc={item.cardmarket.url}
-                            //     name={item.name}
-                            //     rarity={item.rarity}
-                            //     price={item.cardmarket.prices.averageSellPrice}
-                            //     stock={item.set.total}
-                            //     selectionStateText={item.isSelected}>
-                            // </Item>
                         )
                     }}
                     keyExtractor={(item, index) => index}
@@ -190,10 +232,24 @@ const PokemonShopping = () => {
                     onEndReachedThreshold={0.1}
                 /> 
                 
-            </ScrollView>
-            <TouchableOpacity style={styles.cartButton}>
-            <Image source = {require("./pictures/cartTrans.png")} style={styles.cartImage}/>
+            {/* </ScrollView> */}
+            <TouchableOpacity style={styles.cartButton} onPress={() => {toggleModal()}}>
+                <ShoppingCart style={styles.cartImage} color='white' size={26}></ShoppingCart>
             </TouchableOpacity>
+
+            <Modal
+            isVisible= {modalVisibility}
+            onBackdropPress={toggleModal}>
+                <View style={styles.modal}>
+                    <TouchableOpacity style={styles.escapeImage} onPress={toggleModal}>
+                        <X  color='grey'></X>
+                    </TouchableOpacity>
+
+                    <Text style={styles.cartTitle}>Your Cart</Text>
+                    
+                    <CartItem></CartItem>
+                </View>
+            </Modal>
     </SafeAreaView> 
 
     
@@ -225,8 +281,8 @@ const styles = StyleSheet.create({
     },
 
     imageUnavailable: {
-        height: 400,
-        width: 260,
+        height: 380,
+        width: 250,
         borderRadius: 5,
         zIndex: 1,
     },
@@ -247,7 +303,7 @@ const styles = StyleSheet.create({
     selectionBox: {
         height: 50,
         width: 220,
-        marginTop: -35,
+        marginTop: -30,
         backgroundColor: "black",
         justifyContent: 'center',
         alignItems: 'center',
@@ -255,15 +311,13 @@ const styles = StyleSheet.create({
     },
 
     selectedBox: {
-        selectionBox: {
-            height: 50,
-            width: 220,
-            marginTop: -35,
-            backgroundColor: "grey",
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 25,
-        },
+        height: 50,
+        width: 220,
+        marginTop: -30,
+        backgroundColor: "grey",
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 25,
     },
     
     nameText: {
@@ -275,7 +329,8 @@ const styles = StyleSheet.create({
 
     rarityText: {
         fontSize: 20,
-        color: "blue",
+        fontFamily: "sans-serif-condensed",
+        color: "#5900b3",
         marginTop: 20,
         // backgroundColor: "red",
     },
@@ -299,7 +354,8 @@ const styles = StyleSheet.create({
     priceStockText: {
         fontSize: 20,
         alignSelf: 'center',
-        color: "black",
+        color: "#404040",
+        fontWeight: '400',
     },
 
     selectionText: {
@@ -333,7 +389,82 @@ const styles = StyleSheet.create({
     cartImage:{
         height: 30,
         width: 30,
-    }
+    },
+
+    modal: {
+        height: "50%",
+        backgroundColor: "white",
+        padding: 15,
+        borderRadius: 10,
+    },
+
+    modalButton:{
+        width: 100,
+        marginBottom: 10,
+    },
+
+    escapeImage: {
+        height: 20,
+        width: 20,
+        alignSelf: 'flex-end',
+        // backgroundColor: "red",
+        alignItems:'center',
+        justifyContent: 'center',
+    },
+
+    cartListContainer:{
+        height: "80%",
+        width: "100%",
+        alignItems:'center',
+    },
+
+    cartTitle:{
+        color: 'black',
+        fontSize: 18,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        paddingBottom: 10,
+    },
+
+    cartItemBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        padding: 10,
+        width: "100%",
+        height: "30%",
+        backgroundColor: 'red',
+    },
+
+    cartImageContainer:{
+        height: "100%",
+        width: "20%",
+        backgroundColor: "green",
+    },
+
+    deleteItemIcon: {
+        height: 10,
+        width: 10,
+        backgroundColor: "yellow",
+        alignSelf: 'flex-start',
+        alignItems:'center',
+        justifyContent: 'center',
+    },
+
+    cardDetails: {
+        flexDirection: 'column',
+        backgroundColor: 'green',
+        height: "100%",
+        width: "40%",
+    },
+
+    quantPriceBox: {
+        backgroundColor: 'blue',
+        height: "100%",
+        width: "30%",
+    },
+
+
     
 })
 
